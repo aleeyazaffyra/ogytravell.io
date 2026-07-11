@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OGY TRAVEL - Premium Management & Booking Portal</title>
+    
+    <!-- External Frameworks / Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Continuous File CSS Library -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-cream-main font-sans min-h-screen flex flex-col text-gray-800 items-center justify-between">
+
+    <div id="page-login" class="page active w-full flex flex-col items-center justify-center min-h-screen bg-maroon-dark px-4 py-12 relative overflow-hidden">
+        <div class="absolute w-96 h-96 rounded-full bg-maroon-light opacity-20 -top-20 -left-20 blur-3xl"></div>
+        <div class="absolute w-96 h-96 rounded-full bg-maroon-main opacity-30 -bottom-20 -right-20 blur-3xl"></div>
+
+        <div class="bg-white p-8 md:p-10 rounded-2xl shadow-2xl w-full max-w-lg border border-cream-dark z-10 mx-auto text-center">
+            <div class="mb-8">
+                <div class="w-16 h-16 bg-maroon-main text-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-lg">
+                    <i class="fa-solid fa-plane-up text-2xl"></i>
+                </div>
+                <h2 class="text-3xl font-extrabold text-maroon-dark tracking-tight">OGY TRAVEL</h2>
+                <p class="text-gray-600 text-sm mt-1">Luxury Agency Management & Booking Portal</p>
+            </div>
+            
+            <div id="role-selection-section" class="space-y-4">
+                <p class="text-gray-700 text-sm font-semibold mb-2">Please select your identity:</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="selectRole('admin')" class="p-4 border-2 border-cream-dark hover:border-maroon-main rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-cream-main transition group">
+                        <i class="fa-solid fa-user-shield text-2xl text-gray-500 group-hover:text-maroon-main transition"></i>
+                        <span class="font-bold text-gray-800 text-sm">Admin</span>
+                    </button>
+                    <button onclick="selectRole('user')" class="p-4 border-2 border-cream-dark hover:border-maroon-main rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-cream-main transition group">
+                        <i class="fa-solid fa-circle-user text-2xl text-gray-500 group-hover:text-maroon-main transition"></i>
+                        <span class="font-bold text-gray-800 text-sm">User</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="auth-form-wrapper" class="hidden animate-fade-in">
+                <button onclick="backToRoles()" class="text-xs text-gray-600 hover:text-maroon-main flex items-center space-x-1 mb-4 font-bold">
+                    <i class="fa-solid fa-arrow-left"></i> <span>Change Identity (<span id="selected-role-display" class="uppercase text-maroon-main font-black"></span>)</span>
+                </button>
+
+                <div class="flex border-b border-gray-200 mb-6">
+                    <button id="tab-login-btn" onclick="switchAuthTab('login')" class="w-1/2 py-2 text-center font-bold text-maroon-main border-b-2 border-maroon-main transition">Log In</button>
+                    <button id="tab-register-btn" onclick="switchAuthTab('register')" class="w-1/2 py-2 text-center font-semibold text-gray-500 hover:text-maroon-main transition">Create Account</button>
+                </div>
+
+                <div id="auth-login-section" class="text-left">
+                    <div id="login-error" class="hidden bg-red-50 border-l-4 border-red-600 text-red-700 p-4 rounded mb-5 text-sm flex items-center">
+                        <i class="fa-solid fa-triangle-exclamation mr-2 text-base flex-shrink-0"></i>
+                        <span id="login-error-message">Invalid Username or Password! Please try again.</span>
+                    </div>
+
+                    <form id="login-form" onsubmit="handleLogin(event)" class="space-y-5">
+                        <div>
+                            <label class="block text-gray-800 text-xs font-bold uppercase tracking-wider mb-2">Username</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                                    <i class="fa-solid fa-user"></i>
+                                </span>
+                                <input type="text" id="username" class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-maroon-main text-gray-800 transition" placeholder="Enter your username" required>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-gray-800 text-xs font-bold uppercase tracking-wider mb-2">Password</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                                    <i class="fa-solid fa-lock"></i>
+                                </span>
+                                <input type="password" id="password" class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-maroon-main text-gray-800 transition" placeholder="••••" required>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between text-xs mb-4">
+                            <label class="flex items-center text-gray-700 font-semibold cursor-pointer">
+                                <input type="checkbox" class="rounded text-maroon-main focus:ring-maroon-main mr-2"> Remember details
+                            </label>
+                            <a href="#" onclick="alert('Simulation Note: Password restoration systems are bypassed in this environment.')" class="text-maroon-main font-semibold hover:underline">Forgot password?</a>
+                        </div>
+                        <button type="submit" class="w-full bg-maroon-main hover:bg-maroon-dark text-white font-bold py-3.5 px-4 rounded-xl transition duration-300 shadow-lg flex items-center justify-center space-x-2 transform active:scale-[0.99]">
+                            <span>Submit</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                        </button>
+                    </form>
+
+                    <div class="mt-6 bg-cream-main p-4 rounded-xl border border-cream-dark text-xs text-gray-700 space-y-1">
+                        <p class="font-bold text-maroon-dark text-sm mb-1"><i class="fa-solid fa-circle-info mr-1"></i> Access Logs Hint:</p>
+                        <p class="font-medium" id="credential-hint-text">Please enter the registered Username and Password.</p>
+                    </div>
+                </div>
+
+                <div id="auth-register-section" class="hidden text-left">
+                    <form id="register-form" onsubmit="handleRegister(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-gray-800 text-xs font-bold uppercase tracking-wider mb-1">Username</label>
+                            <input type="text" id="reg-username" required class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-maroon-main" placeholder="Choose a unique username">
+                        </div>
+                        <div>
+                            <label class="block text-gray-800 text-xs font-bold uppercase tracking-wider mb-1">Email Address</label>
+                            <input type="email" id="reg-email" required class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-maroon-main" placeholder="john@example.com">
+                        </div>
+                        <div>
+                            <label class="block text-gray-800 text-xs font-bold uppercase tracking-wider mb-1">Password</label>
+                            <input type="password" id="reg-password" required class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-maroon-main" placeholder="••••">
+                        </div>
+                        <button type="submit" class="w-full bg-maroon-light hover:bg-maroon-main text-white font-bold py-3 px-4 rounded-xl transition duration-300 shadow">
+                            Submit Registration
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav id="main-nav" class="hidden w-full bg-white shadow-md sticky top-0 z-50 border-b border-cream-dark">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="navigateTo('dashboard')">
+                    <div class="w-10 h-10 bg-maroon-main text-white rounded-lg flex items-center justify-center shadow-md">
+                        <i class="fa-solid fa-plane-departure text-lg"></i>
+                    </div>
+                    <div>
+                        <span class="font-extrabold text-xl tracking-tight text-maroon-dark block">OGY TRAVEL</span>
+                        <span class="text-[10px] text-gray-500 uppercase tracking-widest block -mt-1">Travel Portal</span>
+                    </div>
+                    <span id="role-badge" class="ml-2 px-2.5 py-0.5 text-[10px] font-black rounded-full bg-maroon-dark text-white border border-maroon-light"></span>
+                </div>
+
+                <div class="hidden md:flex items-center space-x-1">
+                    <button onclick="navigateTo('dashboard')" class="text-gray-700 hover:text-maroon-main hover:bg-cream-main px-4 py-2 rounded-lg font-bold text-sm transition flex items-center space-x-2">
+                        <i class="fa-solid fa-chart-pie text-sm"></i> <span>Dashboard</span>
+                    </button>
+                    <button onclick="navigateTo('packages')" class="text-gray-700 hover:text-maroon-main hover:bg-cream-main px-4 py-2 rounded-lg font-bold text-sm transition flex items-center space-x-2">
+                        <i class="fa-solid fa-map-location-dot text-sm"></i> <span>Vacation Packages</span>
+                    </button>
+                    <button id="nav-booking-link" onclick="navigateTo('bookings')" class="text-gray-700 hover:text-maroon-main hover:bg-cream-main px-4 py-2 rounded-lg font-bold text-sm transition flex items-center space-x-2">
+                        <i class="fa-solid fa-receipt text-sm"></i> <span id="nav-booking-text">Bookings</span>
+                    </button>
+                    <button id="nav-admin-only-btn" onclick="navigateTo('admin-panel')" class="hidden text-gray-700 hover:text-maroon-main hover:bg-cream-main px-4 py-2 rounded-lg font-bold text-sm transition flex items-center space-x-2">
+                        <i class="fa-solid fa-sliders text-sm"></i> <span>Manage Inventory</span>
+                    </button>
+                    <button onclick="navigateTo('reviews')" class="text-gray-700 hover:text-maroon-main hover:bg-cream-main px-4 py-2 rounded-lg font-bold text-sm transition flex items-center space-x-2">
+                        <i class="fa-solid fa-star text-sm"></i> <span>Reviews</span>
+                    </button>
+                    
+                    <div class="h-6 w-px bg-gray-200 mx-2"></div>
+                    
+                    <button onclick="logout()" class="bg-maroon-main hover:bg-maroon-dark text-white px-5 py-2 rounded-xl text-sm font-bold transition shadow-md hover:shadow-lg flex items-center space-x-2">
+                        <i class="fa-solid fa-power-off text-xs"></i> <span>Logout</span>
+                    </button>
+                </div>
+
+                <div class="flex items-center md:hidden">
+                    <button onclick="toggleMobileMenu()" class="text-maroon-dark focus:outline-none p-2 rounded-lg hover:bg-cream-main transition">
+                        <i id="hamburger-icon" class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-cream-dark px-4 pt-2 pb-6 space-y-2 shadow-inner text-center">
+            <button onclick="navigateTo('dashboard')" class="flex items-center justify-center space-x-3 w-full text-center text-gray-800 py-3 px-4 rounded-xl font-bold hover:bg-cream-main text-sm"><i class="fa-solid fa-chart-pie text-maroon-main"></i> <span>Dashboard</span></button>
+            <button onclick="navigateTo('packages')" class="flex items-center justify-center space-x-3 w-full text-center text-gray-800 py-3 px-4 rounded-xl font-bold hover:bg-cream-main text-sm"><i class="fa-solid fa-map-location-dot text-maroon-main"></i> <span>Vacation Packages</span></button>
+            <button id="nav-booking-link-mobile" onclick="navigateTo('bookings')" class="flex items-center justify-center space-x-3 w-full text-center text-gray-800 py-3 px-4 rounded-xl font-bold hover:bg-cream-main text-sm"><i class="fa-solid fa-receipt text-maroon-main"></i> <span id="nav-booking-text-mobile">Bookings</span></button>
+            <button id="nav-admin-only-btn-mobile" onclick="navigateTo('admin-panel')" class="hidden flex items-center justify-center space-x-3 w-full text-center text-gray-800 py-3 px-4 rounded-xl font-bold hover:bg-cream-main text-sm"><i class="fa-solid fa-sliders text-maroon-main"></i> <span>Manage Inventory</span></button>
+            <button onclick="navigateTo('reviews')" class="flex items-center justify-center space-x-3 w-full text-center text-gray-800 py-3 px-4 rounded-xl font-bold hover:bg-cream-main text-sm"><i class="fa-solid fa-star text-maroon-main"></i> <span>Reviews</span></button>
+            <div class="h-px bg-gray-100 my-2"></div>
+            <button onclick="logout()" class="flex items-center justify-center space-x-2 w-full bg-maroon-main text-white py-3 rounded-xl font-bold text-center shadow"><i class="fa-solid fa-power-off text-xs"></i> <span>Sign Out Portal</span></button>
+        </div>
+    </nav>
+
+    <main class="w-full flex-grow max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 flex flex-col items-center justify-start">
+        <div class="w-full">
+            
+            <div id="page-dashboard" class="page space-y-8 text-center">
+                <div class="bg-gradient-to-r from-maroon-dark to-maroon-main text-maroon p-6 md:p-8 rounded-2xl shadow-xl border border-maroon-light flex flex-col items-center justify-center relative overflow-hidden text-center">
+                    <div class="absolute w-64 h-64 bg-white opacity-5 rounded-full -right-10 -bottom-10"></div>
+                    <div class="space-y-3 z-10 max-w-3xl mx-auto">
+                        <h1 class="text-2xl md:text-4xl font-maroon tracking-tight">Welcome Back, <span id="dash-username" class="text-maroon-dark">User Profile</span>!</h1>
+                        <p class="text-maroon-dark text-xs md:text-sm font-light opacity-90 mx-auto">OGY TRAVEL unified ecosystem allows management components visualization to oversee booking records metrics analytics, manage flight inventory variables, and checkout luxury travel arrangements securely inside a standardized, centralized client interface model.</p>
+                        <div class="pt-2">
+                            <button onclick="navigateTo('packages')" class="bg-white text-maroon-dark hover:bg-cream-dark font-extrabold text-xs px-6 py-3 rounded-xl transition shadow transform active:scale-95">
+                                <i class="fa-solid fa-magnifying-glass-location mr-1"></i> Explore More
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-cream-dark flex flex-col items-center justify-center hover:shadow-md transition">
+                        <div class="p-3 bg-cream-dark text-maroon-dark rounded-xl mb-2"><i class="fa-solid fa-globe text-xl"></i></div>
+                        <p class="text-[10px] text-gray-500 uppercase tracking-wider font-bold">Active Packages</p>
+                        <p id="stat-packages-count" class="text-xl font-black text-maroon-dark">4 Catalogues</p>
+                        <p class="text-[9px] text-green-600 font-medium mt-1"><i class="fa-solid fa-circle-check"></i> Available live online</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-cream-dark flex flex-col items-center justify-center hover:shadow-md transition">
+                        <div class="p-3 bg-cream-dark text-maroon-dark rounded-xl mb-2"><i class="fa-solid fa-coins text-xl"></i></div>
+                        <p class="text-[10px] text-gray-500 uppercase tracking-wider font-bold">Total Sales</p>
+                        <p id="stat-total-sales" class="text-xl font-black text-maroon-dark">RM 45,200</p>
+                        <p class="text-[9px] text-blue-600 font-medium mt-1"><i class="fa-solid fa-arrow-trend-up"></i> Increased +14% this month</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-cream-dark flex flex-col items-center justify-center hover:shadow-md transition">
+                        <div class="p-3 bg-cream-dark text-maroon-dark rounded-xl mb-2"><i class="fa-solid fa-user-astronaut text-xl"></i></div>
+                        <p class="text-[10px] text-gray-500 uppercase tracking-wider font-bold">Registered Clients</p>
+                        <p id="stat-tourists-count" class="text-xl font-black text-maroon-dark">184 Travelers</p>
+                        <p class="text-[9px] text-gray-500 font-medium mt-1">Stored in state environment memory</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-cream-dark flex flex-col items-center justify-center hover:shadow-md transition">
+                        <div class="p-3 bg-cream-dark text-maroon-dark rounded-xl mb-2"><i class="fa-solid fa-shield-halved text-xl"></i></div>
+                        <p class="text-[10px] text-gray-500 uppercase tracking-wider font-bold">Gateway Cryptography</p>
+                        <p class="text-xl font-black text-maroon-dark">SSL 256-Bit</p>
+                        <p class="text-[9px] text-green-600 font-medium mt-1"><i class="fa-solid fa-lock text-[8px]"></i> Fully encrypted checkout</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 text-center items-stretch">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-cream-dark lg:col-span-2 flex flex-col justify-between items-center">
+                        <div class="w-full">
+                            <h3 class="text-lg font-bold text-maroon-dark">Destination Purchase Volume Metrics Analytics</h3>
+                            <p class="text-xs text-gray-500 mb-4">Real-time distribution framework representing active tourist packages matching global telemetry indexes for fiscal year 2026</p>
+                            <div class="w-full relative h-72 mx-auto">
+                                <canvas id="analyticsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-cream-dark flex flex-col justify-between items-center text-center">
+                        <div class="w-full">
+                            <h3 class="text-lg font-bold text-maroon-dark mb-1">Top Destination of the Month</h3>
+                            <p class="text-xs text-gray-500 mb-4">Highest search metrics frequency query logs by luxury corporate client accounts.</p>
+                            
+                            <div class="space-y-3 max-w-md mx-auto">
+                                <div class="flex items-center justify-between p-3 bg-cream-main rounded-xl border border-cream-dark">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="w-7 h-7 rounded-full bg-maroon-main text-white font-bold flex items-center justify-center text-xs">1</span>
+                                        <span class="text-xs font-bold text-gray-800">Banyuwangi, Indonesia</span>
+                                    </div>
+                                    <span class="text-[10px] font-bold bg-maroon-dark text-white px-2.5 py-0.5 rounded-md uppercase">Hot 🔥</span>
+                                </div>
+                                <div class="flex items-center justify-between p-3 bg-cream-main rounded-xl border border-cream-dark">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="w-7 h-7 rounded-full bg-maroon-light text-white font-bold flex items-center justify-center text-xs">2</span>
+                                        <span class="text-xs font-bold text-gray-800">Tokyo, Japan</span>
+                                    </div>
+                                    <span class="text-xs text-gray-500 font-medium">12 Bookings</span>
+                                </div>
+                                <div class="flex items-center justify-between p-3 bg-cream-main rounded-xl border border-cream-dark">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="w-7 h-7 rounded-full bg-maroon-light text-white font-bold flex items-center justify-center text-xs">3</span>
+                                        <span class="text-xs font-bold text-gray-800">Seoul, South Korea</span>
+                                    </div>
+                                    <span class="text-xs text-gray-500 font-medium">8 Bookings</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-packages" class="page space-y-6 text-center">
+                <div class="flex flex-col items-center justify-center text-center border-b border-cream-dark pb-5 max-w-2xl mx-auto space-y-3">
+                    <h2 class="text-3xl font-black text-maroon-dark">Exclusive Signature Vacation Packages</h2>
+                    <p class="text-gray-600 text-sm">Sort through curated premium options, examine itinerary duration variables, and initiate secure transaction checkouts instantly.</p>
+                    <div class="flex items-center space-x-2 pt-2">
+                        <label class="text-xs font-bold text-gray-600 uppercase tracking-wide">Sort Matrix:</label>
+                        <select id="filter-price-select" onchange="handlePackageFiltering()" class="bg-white border border-gray-300 rounded-xl px-3 py-2 text-xs font-bold focus:ring-2 focus:ring-maroon-main text-gray-800 cursor-pointer">
+                            <option value="all">Display All Products</option>
+                            <option value="low">Price: Low to High</option>
+                            <option value="high">Price: High to Low</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center" id="packages-container">
+                    </div>
+            </div>
+
+            <div id="page-bookings" class="page space-y-6 text-center">
+                <div class="flex flex-col items-center justify-center text-center border-b border-cream-dark pb-5 max-w-3xl mx-auto space-y-2">
+                    <h2 id="booking-title" class="text-3xl font-black text-maroon-dark">Global Transaction Auditing Ledger</h2>
+                    <p id="booking-desc" class="text-gray-600 text-sm">System comprehensive archival spreadsheet showing historical tracking of verified premium digital checkouts receipts.</p>
+                    <div class="pt-2">
+                        <button onclick="window.print()" class="bg-cream-dark hover:bg-gray-200 text-maroon-dark font-bold text-xs px-4 py-2.5 rounded-xl transition border border-gray-300">
+                            <i class="fa-solid fa-print mr-1"></i> Print System Audit Logs Spreadsheet
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-cream-dark overflow-hidden max-w-5xl mx-auto">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-maroon-dark text-cream-light text-xs font-bold uppercase tracking-wider">
+                                    <th class="p-4 border-b border-maroon-light">Reference ID</th>
+                                    <th class="p-4 border-b border-maroon-light">Purchaser Identity Account</th>
+                                    <th class="p-4 border-b border-maroon-light">Selected Packages</th>
+                                    <th class="p-4 border-b border-maroon-light">Stamp Date</th>
+                                    <th class="p-4 border-b border-maroon-light">Gross Total Value</th>
+                                    <th class="p-4 border-b border-maroon-light text-center">Status Payment</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bookings-table-body" class="text-cream-dark text-sm divide-y divide-cream-dark">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-admin-panel" class="page space-y-6 text-center">
+                <div class="border-b border-cream-dark pb-4 max-w-2xl mx-auto">
+                    <h2 class="text-3xl font-black text-maroon-dark">Product Administration Portal</h2>
+                    <p class="text-gray-600 text-sm mt-1">Administrative panel allows ingestion of freshly sourced itinerary portfolios directly into local system runtime memory tables.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start max-w-6xl mx-auto">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-cream-dark space-y-4 h-fit text-left">
+                        <h3 class="text-md font-bold text-maroon-dark border-b pb-2"><i class="fa-solid fa-folder-plus mr-1"></i> New Product Register Form</h3>
+                        
+                        <form id="add-package-form" onsubmit="handleAddNewPackage(event)" class="space-y-4 text-xs">
+                            <div>
+                                <label class="block font-bold text-gray-800 mb-1 uppercase">Destination Title & Region</label>
+                                <input type="text" id="adm-dest" required class="w-full p-2.5 border rounded-xl focus:ring-2 focus:ring-maroon-main text-sm text-gray-800" placeholder="e.g. Sydney, Australia">
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="block font-bold text-gray-800 mb-1 uppercase">Price Point Value (RM)</label>
+                                    <input type="number" id="adm-price" required class="w-full p-2.5 border rounded-xl focus:ring-2 focus:ring-maroon-main text-sm text-gray-800" placeholder="3800">
+                                </div>
+                                <div>
+                                    <label class="block font-bold text-gray-800 mb-1 uppercase">Duration String</label>
+                                    <input type="text" id="adm-days" required class="w-full p-2.5 border rounded-xl focus:ring-2 focus:ring-maroon-main text-sm text-gray-800" placeholder="5 Days 4 Nights">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block font-bold text-gray-800 mb-1 uppercase">Illustration Stock Photograph URL</label>
+                                <input type="url" id="adm-img" required class="w-full p-2.5 border rounded-xl focus:ring-2 focus:ring-maroon-main text-sm text-gray-800" value="https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&w=500&q=80">
+                            </div>
+                            <button type="submit" class="w-full bg-maroon-main hover:bg-maroon-dark text-white font-bold py-3 rounded-xl transition shadow">
+                                <i class="fa-solid fa-plus-circle mr-1"></i> Inject Portfolio Entry to Catalog
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-cream-dark lg:col-span-2 text-left">
+                        <h3 class="text-md font-bold text-maroon-dark mb-3"><i class="fa-solid fa-layer-group mr-1"></i> Active Catalogue Inventory Matrix Control</h3>
+                        <div class="overflow-x-auto text-xs">
+                            <table class="w-full border-collapse text-left">
+                                <thead>
+                                    <tr class="bg-cream-dark text-maroon-dark font-bold">
+                                        <th class="p-3 rounded-l-lg">ID Ref</th>
+                                        <th class="p-3">Destination Name</th>
+                                        <th class="p-3">Duration Structure</th>
+                                        <th class="p-3">Commercial Pricing</th>
+                                        <th class="p-3 text-center rounded-r-lg">Operations</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-packages-table-body" class="divide-y divide-gray-100 text-gray-800">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-reviews" class="page space-y-6 text-center">
+                <div class="border-b border-cream-dark pb-4 max-w-2xl mx-auto">
+                    <h2 class="text-3xl font-black text-maroon-dark">Client Testimonials & Feedback Boards</h2>
+                    <p class="text-gray-600 text-sm mt-1">Unfiltered user experience documentation submitted directly by premium elite club members.</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-cream-dark max-w-xl mx-auto space-y-4 text-left">
+                    <h3 class="text-sm font-bold uppercase text-maroon-main tracking-wider"><i class="fa-solid fa-pen-to-square"></i> Document Your Travel Experience</h3>
+                    <form onsubmit="submitNewReview(event)" class="space-y-4 text-xs">
+                        <div>
+                            <label class="block text-gray-800 font-bold mb-1">Star Assessment Value Rating</label>
+                            <select id="rev-rating" class="w-full p-2.5 border rounded-xl font-bold text-yellow-600 bg-white cursor-pointer">
+                                <option value="5">⭐⭐⭐⭐⭐ (5 / 5 - Exceptional Experience)</option>
+                                <option value="4">⭐⭐⭐⭐ (4 / 5 - Highly Commendable Quality)</option>
+                                <option value="3">⭐⭐⭐ (3 / 5 - Mediocre Standard)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-800 font-bold mb-1">Review Commentary / Testimonial Paragraph</label>
+                            <textarea id="rev-text" required rows="3" class="w-full p-2.5 border rounded-xl text-gray-800 text-sm focus:ring-2 focus:ring-maroon-main" placeholder="Share your hotel arrangements details, concierge services, or tour guide insights..."></textarea>
+                        </div>
+                        <button type="submit" class="bg-maroon-main hover:bg-maroon-dark text-white font-bold px-6 py-2.5 rounded-xl transition shadow">
+                            Broadcast Review Entry
+                        </button>
+                    </form>
+                </div>
+
+                <div id="reviews-list-container" class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto pt-4 text-left text-gray-800">
+                </div>
+            </div>
+            
+            <!-- ==================== PAGE PAYMENT (UPGRADED UI) ==================== -->
+<div id="page-payment" class="page max-w-xl mx-auto bg-white p-6 md:p-8 rounded-2xl shadow-2xl border border-cream-dark space-y-6 relative text-left">
+    <div class="border-b border-cream-dark pb-4 flex items-center justify-between">
+        <h2 class="text-xl font-black text-maroon-dark"><i class="fa-solid fa-credit-card text-maroon-main mr-2"></i>Secured Settlement Gateway</h2>
+        <div class="flex space-x-2 text-xl text-gray-500">
+            <i class="fa-brands fa-cc-visa text-blue-800"></i>
+            <i class="fa-solid fa-building-columns text-green-700"></i>
+            <i class="fa-solid fa-wallet text-orange-600"></i>
+        </div>
+    </div>
+    
+    <div class="bg-cream-main p-4 rounded-xl border border-cream-dark flex justify-between items-center">
+        <div>
+            <span class="text-[10px] text-maroon-main font-bold uppercase tracking-widest block">Selected Portfolio Package</span>
+            <p id="pay-package-name" class="text-base font-extrabold text-gray-800 mt-0.5">Destination Placeholder Label</p>
+        </div>
+        <div class="text-right">
+            <span class="text-[10px] text-gray-600 block uppercase font-bold">Gross Settlement Total</span>
+            <p id="pay-package-price" class="text-xl font-black text-maroon-main mt-0.5">RM 0.00</p>
+        </div>
+    </div>
+
+    <div class="space-y-2">
+        <label class="block text-gray-800 font-bold uppercase tracking-wide text-xs">Choose Payment Method</label>
+        <div class="grid grid-cols-3 gap-2">
+            <label class="border-2 border-maroon-main bg-cream-main p-3 rounded-xl flex flex-col items-center justify-center space-y-1 cursor-pointer shadow-sm" id="opt-card" onclick="selectPaymentMethod('card')">
+                <i class="fa-solid fa-credit-card text-maroon-main text-lg"></i>
+                <span class="text-[10px] font-bold text-gray-800">Kad Kredit/Debit</span>
+            </label>
+            <label class="border border-gray-200 p-3 rounded-xl flex flex-col items-center justify-center space-y-1 cursor-pointer" id="opt-fpx" onclick="selectPaymentMethod('fpx')">
+                <i class="fa-solid fa-building-columns text-gray-500 text-lg"></i>
+                <span class="text-[10px] font-bold text-gray-800">FPX Online Banking</span>
+            </label>
+            <label class="border border-gray-200 p-3 rounded-xl flex flex-col items-center justify-center space-y-1 cursor-pointer" id="opt-wallet" onclick="selectPaymentMethod('wallet')">
+                <i class="fa-solid fa-wallet text-gray-500 text-lg"></i>
+                <span class="text-[10px] font-bold text-gray-800">Touch 'n Go / DuitNow</span>
+            </label>
+        </div>
+    </div>
+
+    <form onsubmit="processPayment(event)" class="space-y-4 text-xs">
+        <div id="payment-card-fields" class="space-y-4">
+            <div>
+                <label class="block text-gray-800 font-bold uppercase tracking-wide mb-1">Bank Cardholder Legal Name</label>
+                <input type="text" id="card-name" required class="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-maroon-main text-sm" placeholder="e.g. AMY JOHNSON">
+            </div>
+            <div>
+                <label class="block text-gray-800 font-bold uppercase tracking-wide mb-1">Credit / Debit Card Number</label>
+                <div class="relative">
+                    <input type="text" id="card-num" placeholder="4321 5678 9101 1121" maxlength="16" required class="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-maroon-main text-sm font-mono tracking-widest">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 text-sm"><i class="fa-regular fa-credit-card"></i></span>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-gray-800 font-bold uppercase tracking-wide mb-1">Expiration (MM/YY)</label>
+                    <input type="text" id="card-exp" placeholder="12/29" maxlength="5" required class="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-maroon-main text-sm font-mono text-center">
+                </div>
+                <div>
+                    <label class="block text-gray-800 font-bold uppercase tracking-wide mb-1">CVV / CVC</label>
+                    <input type="password" id="card-cvv" placeholder="***" maxlength="3" required class="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-maroon-main text-sm font-mono text-center">
+                </div>
+            </div>
+        </div>
+
+        <!-- Professional FPX List Selection -->
+        <div id="payment-fpx-fields" class="hidden space-y-3">
+            <label class="block text-gray-800 font-bold uppercase tracking-wide mb-1">Choose Retail Banking Institution</label>
+            <select id="fpx-bank-select" class="w-full p-3 border border-gray-300 rounded-xl font-bold bg-white text-gray-800 text-sm focus:ring-2 focus:ring-maroon-main">
+                <option value="Maybank2u">Maybank2u (Malayan Banking Berhad)</option>
+                <option value="CIMB Clicks">CIMB Clicks (CIMB Bank)</option>
+                <option value="Public Bank">PBE Bank (Public Bank Berhad)</option>
+                <option value="RHB Now">RHB Now (RHB Bank Berhad)</option>
+                <option value="Hong Leong Connect">Hong Leong Connect</option>
+                <option value="Bank Islam">Bank Islam Online</option>
+            </select>
+            <p class="text-[11px] text-gray-500 bg-gray-50 p-2.5 rounded-lg border border-gray-200">
+                <i class="fa-solid fa-circle-info mr-1 text-maroon-main"></i> You will be securely redirected to your respective bank's authorization portal upon form submission.
+            </p>
+        </div>
+
+        <!-- Real Unified DuitNow / TNG QR Screen -->
+        <div id="payment-wallet-fields" class="hidden p-5 bg-gray-50 border border-gray-200 rounded-xl text-center space-y-3">
+            <p class="font-bold text-gray-800 text-sm">National Dynamic DuitNow / Touch 'n Go QR Payment Gateway</p>
+            <div class="w-40 h-40 bg-white mx-auto flex flex-col items-center justify-center rounded-xl border border-gray-300 shadow-sm p-2">
+                <i class="fa-solid fa-qrcode text-7xl text-gray-800"></i>
+                <div class="text-[9px] font-black text-red-700 uppercase tracking-widest mt-1">OGY TRAVEL SECURE PAY</div>
+            </div>
+            <p class="text-[10px] text-gray-500 font-medium">Please scan this secure dynamic token within 05:00 minutes using your active e-wallet mobile application.</p>
+        </div>
+
+        <div class="bg-gray-50 p-3 rounded-lg text-[11px] text-gray-600 flex items-start space-x-2 border border-gray-200">
+            <input type="checkbox" required class="mt-0.5 rounded text-maroon-main focus:ring-maroon-main cursor-pointer">
+            <span>I acknowledge that I explicitly endorse the agency refund rules clauses, ticketing cancellation parameters, and standard terms of travel agreement.</span>
+        </div>
+
+        <div class="flex space-x-3 pt-3">
+            <button type="button" onclick="navigateTo('packages')" class="w-1/2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold py-3 rounded-xl transition text-center">
+                Abort Transaction
+            </button>
+            <button type="submit" class="w-1/2 bg-maroon-main hover:bg-maroon-dark text-white font-bold py-3 rounded-xl transition shadow-lg text-center flex items-center justify-center space-x-2">
+                <i class="fa-solid fa-lock-open text-xs"></i> <span>Confirm Settlement</span>
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- ==================== PAGE RECEIPT ) ==================== -->
+<div id="page-receipt" class="page max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-2xl border border-gray-200 text-left printable-receipt">
+    <div class="border-b border-gray-300 pb-5 flex justify-between items-start">
+        <div>
+            <h2 class="text-2xl font-black text-maroon-dark tracking-tight">OFFICIAL RECEIPT</h2>
+            <p class="text-xs text-gray-500 mt-1">OGY TRAVEL & Tours International Ltd.</p>
+            <p class="text-[10px] text-gray-400">Company Registration No: 202601244A</p>
+        </div>
+        <div id="receipt-badge-status" class="border border-emerald-600 text-emerald-700 text-[11px] font-black uppercase tracking-wider px-3 py-1.5 rounded-lg bg-emerald-50">
+            SUCCESSFUL
+        </div>
+    </div>
+
+    <!-- Metadata Section -->
+    <div class="grid grid-cols-2 gap-4 my-6 text-xs border-b border-gray-100 pb-4">
+        <div>
+            <p class="text-gray-400 uppercase font-bold tracking-wider text-[9px]">Issued To:</p>
+            <p id="rec-user" class="font-bold text-gray-800 text-sm mt-0.5"></p>
+        </div>
+        <div class="text-right">
+            <p class="text-gray-400 uppercase font-bold tracking-wider text-[9px]">Receipt Reference:</p>
+            <p id="rec-id" class="font-mono font-bold text-gray-800 text-sm mt-0.5"></p>
+            <p class="text-gray-400 uppercase font-bold tracking-wider text-[9px] mt-2">Clearance Date:</p>
+            <p id="rec-date" class="text-gray-700 mt-0.5"></p>
+        </div>
+    </div>
+
+    <!-- CLEAN FORMAL JADUAL (TABLE) -->
+    <table class="w-full text-left border-collapse border border-gray-200 text-xs mb-6">
+        <thead>
+            <tr class="bg-gray-50 text-gray-700 uppercase font-bold tracking-wider border-b border-gray-200 text-[10px]">
+                <th class="p-3 border-r border-gray-200">Description of Travel Asset</th>
+                <th class="p-3 text-center border-r border-gray-200 w-24">Method</th>
+                <th class="p-3 text-center border-r border-gray-200 w-32">Transaction Status</th>
+                <th class="p-3 text-right w-28">Amount</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 text-gray-800">
+            <tr>
+                <td class="p-3 border-r border-gray-200">
+                    <p id="rec-package" class="font-bold text-gray-900"></p>
+                    <p class="text-[10px] text-gray-500 mt-0.5">Includes international class flight routing, premium lodging arrangements, and luxury tour itinerary packages.</p>
+                </td>
+                <td id="rec-method" class="p-3 text-center border-r border-gray-200 font-bold uppercase text-[10px]">CARD</td>
+                <td class="p-3 text-center border-r border-gray-200">
+                    <span id="rec-status-text" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 uppercase">SUCCESS</span>
+                </td>
+                <td id="rec-amount-row" class="p-3 text-right font-bold text-gray-900">RM 0.00</td>
+            </tr>
+            <!-- Summary Row -->
+            <tr class="bg-gray-50 font-bold border-t-2 border-gray-300">
+                <td colspan="3" class="p-3 text-right uppercase tracking-wider text-gray-600 border-r border-gray-200">Total Funds Paid (MYR):</td>
+                <td id="rec-amount" class="p-3 text-right text-sm font-black text-maroon-dark">RM 0.00</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Action Action Buttons Section (Hidden During Printing) -->
+    <div class="flex space-x-3 pt-4 border-t border-gray-200 hide-on-print">
+        <button onclick="triggerPdfDownload()" class="w-1/2 bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 px-4 rounded-xl text-xs transition flex items-center justify-center space-x-2">
+            <i class="fa-solid fa-file-pdf"></i> <span>Download PDF Receipt</span>
+        </button>
+        <button onclick="navigateTo('dashboard')" class="w-1/2 bg-maroon-main hover:bg-maroon-dark text-white py-3 rounded-xl font-bold text-xs transition shadow text-center">
+            Return to Dashboard
+        </button>
+    </div>
+</div>
+            
+    </main>
+
+    <footer class="w-full bg-maroon-dark text-white border-t border-maroon-light py-6 text-center text-xs space-y-2 z-40">
+        <p class="font-black tracking-wide uppercase text-cream-light text-sm">&copy; 2026 OGY TRAVEL Premium Agency Portal. All Rights Reserved.</p>
+        <p class="text-cream-dark text-[11px] max-w-xl mx-auto px-4 opacity-90 font-medium">Engineered to comply with responsive academic frontend framework interaction interface specifications criteria blueprints.</p>
+    </footer>
+
+    <!-- Sambungan Fail JavaScript Luaran -->
+    <script src="script.js"></script>
+</body>
+</html>

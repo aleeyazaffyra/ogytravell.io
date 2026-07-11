@@ -1,0 +1,135 @@
+:root {
+    --maroon-dark: #4a0e17;
+    --maroon-main: #722f37;
+    --maroon-light: #984447;
+    --cream-dark: #ede6d6;
+    --cream-main: #fdfbf7;
+    --cream-light: #fffdfa;
+}
+
+.bg-maroon-dark { background-color: var(--maroon-dark); }
+.bg-maroon-main { background-color: var(--maroon-main); }
+.bg-maroon-light { background-color: var(--maroon-light); }
+.bg-cream-dark { background-color: var(--cream-dark); }
+.bg-cream-main { background-color: var(--cream-main); }
+
+.text-maroon-dark { color: var(--maroon-dark); }
+.text-maroon-main { color: var(--maroon-main); }
+.text-maroon-light { color: var(--maroon-light); }
+.text-cream-dark { color: var(--cream-dark); }
+.text-cream-light { color: var(--cream-light); }
+
+.border-maroon-main { border-color: var(--maroon-main); }
+.border-cream-dark { border-color: var(--cream-dark); }
+
+.page { display: none; }
+.page.active { display: block; }
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--cream-main); }
+::-webkit-scrollbar-thumb { background: var(--maroon-main); border-radius: 4px; }
+
+/* PEMBETULAN REKA BENTUK MEDIA PRINT AGAR BOLEH SAVE PDF DENGAN SEMPURNA */
+@media print {
+    /* Sembunyikan bahagian sistem luaran sahaja, jangan padam paparan kontena */
+    nav, 
+    footer, 
+    button, 
+    input[type="button"],
+    a {
+        display: none !important;
+    }
+
+    body {
+        background: white !important;
+        color: black !important;
+    }
+
+    .page.active {
+        display: block !important;
+        width: 100% !important;
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        color: black !important;
+        border: 1px solid #ccc !important;
+        padding: 10px !important;
+    }
+}
+
+@media(max-width:768px){
+    table{
+        font-size:12px;
+    }
+    th, td{
+        padding:8px;
+    }
+}
+
+/* ==================== PRINT ARCHITECTURE FOR PERFECT PDF SAVE ==================== */
+@media print {
+    nav, 
+    footer, 
+    button,
+    .hide-on-print,
+    #role-selection-section,
+    .absolute {
+        display: none !important;
+        opacity: 0 !important;
+    }
+
+    body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-family: sans-serif;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    main {
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+    }
+
+    .page {
+        display: none !important;
+    }
+    
+    .page.active.printable-receipt {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0px !important;
+        margin: 0px !important;
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+
+    table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        margin-top: 20px !important;
+    }
+
+    th, td {
+        border: 1px solid #b3b3b3 !important;
+        padding: 10px !important;
+        color: #000000 !important;
+    }
+
+    th {
+        background-color: #f2f2f2 !important;
+    }
+}
